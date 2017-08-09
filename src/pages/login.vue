@@ -61,7 +61,6 @@ export default {
     submitForm (formName) {
       var vm = this
       this.$refs[formName].validate((valid) => {
-        console.log(valid)
         if (valid) {
           login({ name: vm.ruleForm2.name, password: vm.ruleForm2.pass }, res => {
             if (res.data.code === 0) {

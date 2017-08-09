@@ -1,49 +1,69 @@
 <template>
     <div class='formBox'>
         <el-form ref="form" :model="form" label-width="150px">
-            <el-form-item label="商铺名称：">
-                <el-input v-model="form.name"></el-input>
+            <el-form-item label="商铺名称：" prop='shopname'>
+                <el-input v-model="form.shopname"></el-input>
             </el-form-item>
-            <el-form-item label="详细地址：">
+            <el-form-item label="详细地址：" prop='address'>
                 <el-input v-model="form.address"></el-input>
             </el-form-item>
-            <el-form-item label="联系方式：">
+            <el-form-item label="联系方式：" prop='phone'>
                 <el-input v-model="form.phone"></el-input>
             </el-form-item>
-            <el-form-item label="店铺简介：">
+            <el-form-item label="店铺简介：" prop='intro'>
                 <el-input v-model="form.intro"></el-input>
             </el-form-item>
-            <el-form-item label="商铺标语：">
+            <el-form-item label="商铺标语：" prop='sign'>
                 <el-input v-model="form.sign"></el-input>
             </el-form-item>
-            <el-form-item label="店铺分类：">
+            <el-form-item label="店铺分类：" prop='category'>
                 <el-cascader :options="options" v-model="form.category"></el-cascader>
             </el-form-item>
-            <el-form-item label="店铺特点：">
-                <el-select v-model="form.characteristic" placeholder="请选择活动区域">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                </el-select>
+            <el-form-item label="店铺特点：" prop='characteristic'>
+                <el-checkbox-group v-model="form.characteristic">
+                    <el-checkbox label="品牌保证"></el-checkbox>
+                    <el-checkbox label="蜂鸟专送"></el-checkbox>
+                    <el-checkbox label="新店开张"></el-checkbox>
+                    <el-checkbox label="外卖保"></el-checkbox>
+                    <el-checkbox label="准时达"></el-checkbox>
+                    <el-checkbox label="开发票"></el-checkbox>
+                </el-checkbox-group>
             </el-form-item>
-            <el-form-item label='配送费：'>
+            <el-form-item label='配送费：' prop='deliveryfee'>
                 <el-input-number v-model="form.deliveryfee" @change="handleChange" :min="1" :max="10"></el-input-number>
             </el-form-item>
-            <el-form-item label='起送价：'>
-                <el-input-number v-model="form.startprice" @change="handleChange" :min="1" :max="10"></el-input-number>
+            <el-form-item label='起送价：' prop='startprice'>
+                <el-input-number v-model="form.startprice" @change="handleChange" :min="1" :max="100"></el-input-number>
             </el-form-item>
             <el-form-item label="营业时间：">
-                <el-col :span="11">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="form.satrttime" style="width: 100%;"></el-date-picker>
+                <el-col :span='11'>
+                    <el-form-item  prop='starttime'>
+                        <el-time-select placeholder="起始时间" v-model="form.starttime" :picker-options="{
+                            start: '08:30',
+                            step: '00:15',
+                            end: '18:30'
+                            }">
+                        </el-time-select>
+                    </el-form-item>
                 </el-col>
-                <el-col class="line" :span="2">-</el-col>
-                <el-col :span="11">
-                    <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.endtime" style="width: 100%;"></el-time-picker>
+                <el-col :span='2'>-</el-col>
+                <el-col :span='11'>
+                    <el-form-item prop='endtime'>
+                        <el-time-select placeholder="结束时间" v-model="form.endtime" :picker-options="{
+                            start: '08:30',
+                            step: '00:15',
+                            end: '23:30',
+                            minTime: form.startTime
+                            }">
+                        </el-time-select>
+                    </el-form-item>
                 </el-col>
             </el-form-item>
             <el-form-item label='店铺图片：'>
                 <el-upload class="upload-demo" 
-                   action="http://127.0.0.1:3000/common/upload" 
+                   action="http://127.0.0.1:3000/api/common/upload" 
                    name='fulAvatar'
+                   :multiple='isMultiple'
                    :on-success='shopavatar'
                    :file-list="fileList2" 
                    list-type="picture">
@@ -53,7 +73,7 @@
             </el-form-item>  
             <el-form-item label='营业执照：'>
                 <el-upload class="upload-demo" 
-                   action="http://127.0.0.1:3000/common/upload" 
+                   action="http://127.0.0.1:3000/api/common/upload" 
                    name='fulAvatar'
                    :on-success='businesslicense'
                    :file-list="fileList2" 
@@ -64,7 +84,7 @@
             </el-form-item>   
             <el-form-item label='餐饮服务许可证：'>
                 <el-upload class="upload-demo"
-                   action="http://127.0.0.1:3000/common/upload" 
+                   action="http://127.0.0.1:3000/api/common/upload" 
                    name='fulAvatar'
                    :on-success='servicelicense'
                    :file-list="fileList2" 
@@ -75,235 +95,100 @@
             </el-form-item>       
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">立即添加</el-button>
-                <el-button>重置</el-button>
+                <el-button @click='resetForm()'>重置</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 <script>
+import { _getCategory, _addShop } from '../service/getData'
 export default {
   data () {
     return {
       form: {
+        shopname: '',
+        address: '',
+        phone: '',
+        intro: '',
+        sign: '',
+        category: [],
+        characteristic: [],
+        deliveryfee: '',
+        startprice: '',
+        starttime: '',
+        endtime: '',
         shopavatar: '',
         businesslicense: '',
         servicelicense: ''
       },
-      deliveryfee: 0,
-      startprice: 0,
       fileList2: [],
-      fileList: [],
-      selectedOptions: ['zujian', 'data', 'tag'],
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }, {
-            value: 'typography',
-            label: 'Typography 字体'
-          }, {
-            value: 'icon',
-            label: 'Icon 图标'
-          }, {
-            value: 'button',
-            label: 'Button 按钮'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form',
-          children: [{
-            value: 'radio',
-            label: 'Radio 单选框'
-          }, {
-            value: 'checkbox',
-            label: 'Checkbox 多选框'
-          }, {
-            value: 'input',
-            label: 'Input 输入框'
-          }, {
-            value: 'input-number',
-            label: 'InputNumber 计数器'
-          }, {
-            value: 'select',
-            label: 'Select 选择器'
-          }, {
-            value: 'cascader',
-            label: 'Cascader 级联选择器'
-          }, {
-            value: 'switch',
-            label: 'Switch 开关'
-          }, {
-            value: 'slider',
-            label: 'Slider 滑块'
-          }, {
-            value: 'time-picker',
-            label: 'TimePicker 时间选择器'
-          }, {
-            value: 'date-picker',
-            label: 'DatePicker 日期选择器'
-          }, {
-            value: 'datetime-picker',
-            label: 'DateTimePicker 日期时间选择器'
-          }, {
-            value: 'upload',
-            label: 'Upload 上传'
-          }, {
-            value: 'rate',
-            label: 'Rate 评分'
-          }, {
-            value: 'form',
-            label: 'Form 表单'
-          }]
-        }, {
-          value: 'data',
-          label: 'Data',
-          children: [{
-            value: 'table',
-            label: 'Table 表格'
-          }, {
-            value: 'tag',
-            label: 'Tag 标签'
-          }, {
-            value: 'progress',
-            label: 'Progress 进度条'
-          }, {
-            value: 'tree',
-            label: 'Tree 树形控件'
-          }, {
-            value: 'pagination',
-            label: 'Pagination 分页'
-          }, {
-            value: 'badge',
-            label: 'Badge 标记'
-          }]
-        }, {
-          value: 'notice',
-          label: 'Notice',
-          children: [{
-            value: 'alert',
-            label: 'Alert 警告'
-          }, {
-            value: 'loading',
-            label: 'Loading 加载'
-          }, {
-            value: 'message',
-            label: 'Message 消息提示'
-          }, {
-            value: 'message-box',
-            label: 'MessageBox 弹框'
-          }, {
-            value: 'notification',
-            label: 'Notification 通知'
-          }]
-        }, {
-          value: 'navigation',
-          label: 'Navigation',
-          children: [{
-            value: 'menu',
-            label: 'NavMenu 导航菜单'
-          }, {
-            value: 'tabs',
-            label: 'Tabs 标签页'
-          }, {
-            value: 'breadcrumb',
-            label: 'Breadcrumb 面包屑'
-          }, {
-            value: 'dropdown',
-            label: 'Dropdown 下拉菜单'
-          }, {
-            value: 'steps',
-            label: 'Steps 步骤条'
-          }]
-        }, {
-          value: 'others',
-          label: 'Others',
-          children: [{
-            value: 'dialog',
-            label: 'Dialog 对话框'
-          }, {
-            value: 'tooltip',
-            label: 'Tooltip 文字提示'
-          }, {
-            value: 'popover',
-            label: 'Popover 弹出框'
-          }, {
-            value: 'card',
-            label: 'Card 卡片'
-          }, {
-            value: 'carousel',
-            label: 'Carousel 走马灯'
-          }, {
-            value: 'collapse',
-            label: 'Collapse 折叠面板'
-          }]
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }]
+      options: [],
+      isMultiple: false
     }
+  },
+  created () {
+    this.getCatogory()
   },
   methods: {
     handleChange () {},
     onSubmit () {
-      console.log(this.form)
+      const vm = this
+      _addShop(this.form, res => {
+        if (res.data.code === 0) {
+          vm.$message({ message: '添加成功', type: 'success' })
+          vm.resetForm()
+        } else {
+          vm.$message({ message: res.data.err, type: 'error' })
+        }
+      })
     },
     shopavatar (response, file, fileList) {
+      if (fileList.length > 1) {
+        fileList.shift()
+      }
       this.form.shopavatar = response.result + '.' + file.name.split('.')[1]
     },
     businesslicense (response, file, fileList) {
+      if (fileList.length > 1) {
+        fileList.shift()
+      }
       this.form.businesslicense = response.result + '.' + file.name.split('.')[1]
     },
     servicelicense (response, file, fileList) {
+      if (fileList.length > 1) {
+        fileList.shift()
+      }
       this.form.servicelicense = response.result + '.' + file.name.split('.')[1]
+    },
+    getCatogory () {
+      const vm = this
+      _getCategory({}, res => {
+        const result = res.data.result
+        result.forEach(function (item, value) {
+          if (!item.sub_categories) {
+            return
+          }
+          var newobj = {
+            label: item.name,
+            value: item.name,
+            children: []
+          }
+          item.sub_categories.forEach(function (subitem, index) {
+            if (index === 0) {
+              return
+            }
+            newobj.children.push({
+              label: subitem.name,
+              value: subitem.name
+            })
+          })
+          vm.options.push(newobj)
+        })
+      })
+    },
+    resetForm () {
+      this.$refs['form'].resetFields()
+      this.fileList2 = []
     }
   }
 }
