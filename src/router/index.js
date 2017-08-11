@@ -8,6 +8,8 @@ import userList from '@/pages/userList'
 import adminList from '@/pages/adminList'
 import shopList from '@/pages/shopList'
 import addShop from '@/pages/addShop'
+import addFood from '@/pages/addFood'
+import foodList from '@/pages/foodList'
 Vue.use(Router)
 
 export default new Router({
@@ -37,6 +39,14 @@ export default new Router({
           path: '/addShop',
           name: 'addShop',
           component: addShop
+        }, {
+          path: '/addFood',
+          name: 'addFood',
+          component: addFood
+        }, {
+          path: '/foodList',
+          name: 'foodList',
+          component: foodList
         }
       ]
     }, {

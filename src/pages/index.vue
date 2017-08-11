@@ -53,8 +53,8 @@
                 <i class="el-icon-menu"></i>
                 <span slot="title">食品</span>
               </template>
-              <el-menu-item index="食品列表">食品列表</el-menu-item>
-              <el-menu-item index="添加食品">添加食品</el-menu-item>
+              <router-link to='/foodList'><el-menu-item index="食品列表">食品列表</el-menu-item></router-link>
+              <router-link to='/addFood'><el-menu-item index="添加食品">添加食品</el-menu-item></router-link>
             </el-submenu>
             <el-menu-item index="设置">
               <i class="el-icon-setting"></i>

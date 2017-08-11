@@ -24,3 +24,27 @@ export const _getShopList = (data, fun) => {
   ax('/api/shop/query', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
 }
 
+export const _delShop = (data, fun) => {
+  ax('/api/shop/del/' + data.id, 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _editShop = (data, fun) => {
+  ax('/api/shop/edit/' + data.id, 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _foodCategoryAdd = (data, fun) => {
+  ax('/api/food/category/add', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _foodCategoryQuery = (data, fun) => {
+  ax('/api/food/category/query/' + data.shopid, 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _foodAdd = (data, fun) => {
+  ax('/api/food/add', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _foodSpecif = (data, fun) => {
+  ax('/specification/add', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
