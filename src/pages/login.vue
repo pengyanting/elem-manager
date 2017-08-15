@@ -68,6 +68,7 @@ export default {
                 message: '登录成功',
                 type: 'success'
               })
+              localStorage.setItem('info', JSON.stringify(res.data.result))
               vm.$router.push({ path: '/' })
             } else {
               vm.$message({

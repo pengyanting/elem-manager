@@ -10,6 +10,8 @@ import shopList from '@/pages/shopList'
 import addShop from '@/pages/addShop'
 import addFood from '@/pages/addFood'
 import foodList from '@/pages/foodList'
+
+import setting from '@/pages/setting'
 Vue.use(Router)
 
 export default new Router({
@@ -47,6 +49,10 @@ export default new Router({
           path: '/foodList',
           name: 'foodList',
           component: foodList
+        }, {
+          path: '/setting',
+          name: 'setting',
+          component: setting
         }
       ]
     }, {

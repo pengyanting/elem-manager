@@ -71,7 +71,7 @@
                 <el-form-item label="店铺分类：" prop='category'>
                     <el-cascader :options="options" v-model="form.category"></el-cascader>
                 </el-form-item>
-                <el-form-item label="店铺特点：" prop='characteristic'>
+                <el-form-item label="店铺特点" prop='characteristic'>
                     <el-checkbox-group v-model="form.characteristic">
                         <el-checkbox label="品牌保证"></el-checkbox>
                         <el-checkbox label="蜂鸟专送"></el-checkbox>

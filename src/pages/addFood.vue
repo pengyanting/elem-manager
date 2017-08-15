@@ -195,16 +195,18 @@ export default {
       const vm = this
       var data = { foodid: foodid, sigel: vm.form.sigel }
       if (vm.form.sigel === '0') {
-        data.specif = [{ specifname: '', price: vm.form.price, packagefee: vm.form.packagefee }].toString()
-        console.log(data.specif)
+        data.specif = [{ specifname: '', price: vm.form.price, packagefee: vm.form.packagefee }]
+        data.specif = JSON.stringify(data.specif)
       } else {
-        data.specif = vm.tableData.toString()
+        data.specif = JSON.stringify(vm.tableData)
       }
       _foodSpecif(data, res => {
-        console.log(res)
-        vm.$message({ message: '添加成功', type: 'success' })
-        vm.$refs['form'].resetFields()
-        vm.fileList2 = []
+        if (res.code === 0) {
+          vm.$message({ message: '添加成功', type: 'success' })
+          vm.$refs['form'].resetFields()
+          vm.fileList2 = []
+          vm.tableData = [{ specifname: '默认', packagefee: 0, price: 10 }]
+        }
       })
     },
     addCategory () {
@@ -228,7 +230,7 @@ export default {
           vm.options = [] // 清空上一次的列表
           res.result.forEach(function (item) {
             vm.options.push({
-              value: item.id,
+              value: item.name,
               label: item.name
             })
           })

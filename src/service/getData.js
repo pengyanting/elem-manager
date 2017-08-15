@@ -45,6 +45,28 @@ export const _foodAdd = (data, fun) => {
 }
 
 export const _foodSpecif = (data, fun) => {
-  ax('/specification/add', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+  ax('/api/food/specification/add', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
 }
 
+export const _queryFood = (data, fun) => {
+  ax('/api/food/query', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _deleteFood = (data, fun) => {
+  ax('/api/food/delete', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _querySpecif = (data, fun) => {
+  ax('/api/food/specifications/query', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+export const _delSpecif = (data, fun) => {
+  ax('/api/food/specifications/del', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _updateFood = (data, fun) => {
+  ax('/api/food/update', 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}
+
+export const _getAdmin = (data, fun) => {
+  ax('/api/admin/getAdmin/' + data.id, 'post', data).then(res => { fun(res.data) }).catch(err => console.log(err))
+}

@@ -10,7 +10,7 @@
         <el-col :span="12">
           <div class="right">
             <img src="../assets/images/my-head.png" width='35' height='35' alt="">
-            <span>张三</span>
+            <span>{{name}}</span>
             <span class='line'>|</span>
             <span>系统管理员</span>
             <el-dropdown @command="handleCommand">
@@ -56,10 +56,13 @@
               <router-link to='/foodList'><el-menu-item index="食品列表">食品列表</el-menu-item></router-link>
               <router-link to='/addFood'><el-menu-item index="添加食品">添加食品</el-menu-item></router-link>
             </el-submenu>
-            <el-menu-item index="设置">
-              <i class="el-icon-setting"></i>
-              <span slot="title">设置</span>
-            </el-menu-item>
+            <el-submenu index="设置">
+              <template slot='title'>
+                <i class="el-icon-setting"></i>
+                <span slot="title">设置</span>
+              </template>
+              <router-link to='/setting'><el-menu-item index="管理员信息">管理员设置</el-menu-item></router-link>
+            </el-submenu>
           </el-menu>
         </div>
       </el-col>
@@ -93,7 +96,8 @@ export default {
     return {
       Collapse: '',
       currentPathName: '',
-      breadcrumb: []
+      breadcrumb: [],
+      name: JSON.parse(localStorage.getItem('info')).name
     }
   },
   methods: {
